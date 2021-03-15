@@ -1,24 +1,39 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
+
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.json([
-    {
-      title: 'Retiring biosamples-covid19',
-      type: 'domain_retirement',
-      summary: 'We will retire biosamples-covid19 by the end of June 2021. Please migrate to sra-sample-covid19.'
-    },
-    {
-      title: 'Constrained cross reference searching',
-      type: 'forthcoming_changes',
-      summary: 'Constrained cross reference searching will let you limit the cross references returned.'
-    },
-    {
-      title: 'Test of forthcoming changes',
-      type: 'forthcoming_changes',
-      summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean arcu lorem, egestas quis nunc eu, pretium tincidunt purus. Duis iaculis interdum ante, non scelerisque diam gravida ac.'
-    }
-  ]);
+  const newsFileName = path.join('db', 'news.json');
+  const news = JSON.parse(fs.readFileSync(newsFileName, 'utf-8'));
+
+  res.json(news);
 });
+
+router.post('/', (req, res) => {
+  const newsFileName = path.join('db', 'news.json');
+  const news = JSON.parse(fs.readFileSync(newsFileName, 'utf-8'));
+
+  news.push(req.body);
+
+  fs.writeFileSync(newsFileName, JSON.stringify(news));
+
+  res.status(201).end();
+});
+
+router.delete('/:id', (req, res) => {
+  const newsFileName = path.join('db', 'news.json');
+  const id = req.params.id;
+  let news = JSON.parse(fs.readFileSync(newsFileName, 'utf-8'));
+
+  if (!news.find(n => n.id === id)) {
+    res.status(404).end();
+  } else {
+    news = news.filter(n => n.id !== id);
+    fs.writeFileSync(newsFileName, JSON.stringify(news));
+    res.status(200).end();
+  }
+})
 
 module.exports = router;
