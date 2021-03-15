@@ -12,6 +12,11 @@ router.get('/', (req, res) => {
       title: 'Constrained cross reference searching',
       type: 'forthcoming_changes',
       summary: 'Constrained cross reference searching will let you limit the cross references returned.'
+    },
+    {
+      title: 'Test of forthcoming changes',
+      type: 'forthcoming_changes',
+      summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean arcu lorem, egestas quis nunc eu, pretium tincidunt purus. Duis iaculis interdum ante, non scelerisque diam gravida ac.'
     }
   ]);
 });
